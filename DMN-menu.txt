@@ -1811,8 +1811,9 @@ Object.assign(enemyList.style, {
                 return;
             }
 
-            for (const nick of enemies) {
-                const row = document.createElement('div');
+
+for (const [index, nick] of enemies.entries()) {
+    const row = document.createElement('div');
 
                 Object.assign(row.style, {
     display: 'flex',
@@ -1823,8 +1824,10 @@ Object.assign(enemyList.style, {
     minHeight: scaled(18)
 });
 
-                const name = text(nick, {
-                    flex: '1',
+
+const name = text((index + 1) + '. ' + nick, {
+    flex: '1',
+
                     minWidth: '0',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
