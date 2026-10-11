@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         DMN test
+// @name         DMN
 // @namespace    https://tampermonkey.net/
-// @version      3.1
+// @version      3.0
 // @description  kot
 // @match        https://*.tankionline.com/*
 // @updateURL    https://raw.githubusercontent.com/msi250299-spec/DMN/refs/heads/main/DMN.user.js
@@ -55,6 +55,7 @@ var AYo6kZf,e6mxGM,FPw80r,esX8RD,NzULmZ,Gj0_x3,EfqGrDH,hHDKJR,JqeSC4,Cgp7qKG,Xcc
         smooth: true,         // плавное сворачивание / разворачивание
         chipScale: 1.1,       // увеличение значка D при наведении
         battleCollapse: true, // сворачиваться в круг при входе в бой
+enemyHighlight: true, // подсветка врагов
         battleY: 58,          // высота значка в бою, % высоты окна
         afkInterval: 28,      // AFK: средний интервал, секунды
         afkJitter: 3,         // AFK: разброс ±, секунды
@@ -1724,6 +1725,14 @@ var AYo6kZf,e6mxGM,FPw80r,esX8RD,NzULmZ,Gj0_x3,EfqGrDH,hHDKJR,JqeSC4,Cgp7qKG,Xcc
 
         section('ВРАГИ');
 
+toggle('Подсвечивать врагов', 'enemyHighlight', (enabled) => {
+    if (enabled) {
+        scanEnemies();
+    } else {
+        clearEnemyMarks();
+    }
+});
+
         const addRow = document.createElement('div');
 
         Object.assign(addRow.style, {
@@ -1779,12 +1788,17 @@ var AYo6kZf,e6mxGM,FPw80r,esX8RD,NzULmZ,Gj0_x3,EfqGrDH,hHDKJR,JqeSC4,Cgp7qKG,Xcc
         }
 
         const enemyList = document.createElement('div');
-
-        Object.assign(enemyList.style, {
-            display: 'flex',
-            flexDirection: 'column',
-            gap: scaled(4)
-        });
+Object.assign(enemyList.style, {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: scaled(2),
+    flex: '0 0 auto',
+    maxHeight: '90px',
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    paddingRight: scaled(3),
+    boxSizing: 'border-box'
+});
 
         const renderEnemies = () => {
             enemyList.textContent = '';
@@ -1801,11 +1815,13 @@ var AYo6kZf,e6mxGM,FPw80r,esX8RD,NzULmZ,Gj0_x3,EfqGrDH,hHDKJR,JqeSC4,Cgp7qKG,Xcc
                 const row = document.createElement('div');
 
                 Object.assign(row.style, {
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: scaled(6)
-                });
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: scaled(6),
+    flex: '0 0 auto',
+    minHeight: scaled(18)
+});
 
                 const name = text(nick, {
                     flex: '1',
@@ -2293,7 +2309,7 @@ var AYo6kZf,e6mxGM,FPw80r,esX8RD,NzULmZ,Gj0_x3,EfqGrDH,hHDKJR,JqeSC4,Cgp7qKG,Xcc
     }
 
     function scanEnemies() {
-        if (!enemySet.size || document.querySelector(BATTLE_SELECTOR)) {
+        if (!S.enemyHighlight || !enemySet.size || document.querySelector(BATTLE_SELECTOR)) {
             if (markedEnemies.size) {
                 clearEnemyMarks();
             }
@@ -2375,8 +2391,8 @@ var AYo6kZf,e6mxGM,FPw80r,esX8RD,NzULmZ,Gj0_x3,EfqGrDH,hHDKJR,JqeSC4,Cgp7qKG,Xcc
         const style = document.createElement('style');
 
         style.textContent =
-            '[' + ENEMY_ATTR + ']{color:#ff3b3b!important;' +
-            'text-shadow:0 0 6px rgba(255,59,59,0.55)!important}';
+    '[' + ENEMY_ATTR + ']{color:#F47783!important;' +
+    'text-shadow:0 1px 1px rgba(0,0,0,0.95)!important}';
 
         (document.head || document.documentElement).appendChild(style);
 
